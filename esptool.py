@@ -2458,7 +2458,7 @@ def main():
         '--board',
         help='Type of the board to be flash.',
         choices=['esp32dev', 'toe'],
-        default=os.environ.get('ESPTOOL_BOARDTYPE', 'esp32dev'))
+        default='esp32dev')
 
     compress_args = parser_write_flash.add_mutually_exclusive_group(required=False)
     compress_args.add_argument('--compress', '-z', help='Compress data in transfer (default unless --no-stub is specified)',action="store_true", default=None)
@@ -2542,6 +2542,12 @@ def main():
         'erase_flash',
         help='Perform Chip Erase on SPI flash')
     add_spi_connection_arg(parser_erase_flash)
+
+    parser_erase_flash.add_argument(
+        '--board',
+        help='Type of the board to be flash.',
+        choices=['esp32dev', 'toe'],
+        default='esp32dev')
 
     parser_erase_region = subparsers.add_parser(
         'erase_region',

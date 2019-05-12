@@ -197,7 +197,7 @@ class ESPLoader(object):
     # The number of bytes in the UART response that signify command status
     STATUS_BYTES_LENGTH = 2
 
-    def __init__(self, port=DEFAULT_PORT, baud=ESP_ROM_BAUD, trace_enabled=False, boardtype="esp32dev"):
+    def __init__(self, port=DEFAULT_PORT, baud=ESP_ROM_BAUD, trace_enabled=False, boardtype="dev"):
         """Base constructor for ESPLoader bootloader interaction
 
         Don't call this constructor, either instantiate ESP8266ROM
@@ -234,7 +234,7 @@ class ESPLoader(object):
             raise FatalError("Failed to set baud rate %d. The driver may not support this rate." % baud)
 
     @staticmethod
-    def detect_chip(port=DEFAULT_PORT, baud=ESP_ROM_BAUD, connect_mode='default_reset', trace_enabled=False, boardtype="esp32dev"):
+    def detect_chip(port=DEFAULT_PORT, baud=ESP_ROM_BAUD, connect_mode='default_reset', trace_enabled=False, boardtype="dev"):
         """ Use serial access to detect the chip type.
 
         We use the UART's datecode register for this, it's mapped at
@@ -382,7 +382,7 @@ class ESPLoader(object):
 
     def resetToBootloader(self, esp32r0_delay=False):
         
-        if self.boardtype == "esp32dev":
+        if self.boardtype == "dev":
             self._setDTR(False)  # IO0=HIGH
             self._setRTS(True)   # EN=LOW, chip in reset
             time.sleep(0.1)
@@ -419,7 +419,7 @@ class ESPLoader(object):
             self._setRTS(True)  # IO0 = 1            
 
     def hard_reset(self):
-        if self.boardtype == "esp32dev":
+        if self.boardtype == "dev":
             self._setRTS(True)  # EN->LOW
             time.sleep(0.1)
             self._setRTS(False)
@@ -1218,7 +1218,7 @@ class ESP32StubLoader(ESP32ROM):
     STATUS_BYTES_LENGTH = 2  # same as ESP8266, different to ESP32 ROM
     IS_STUB = True
 
-    def __init__(self, rom_loader, boardtype="esp32dev"):
+    def __init__(self, rom_loader, boardtype="dev"):
         self._port = rom_loader._port
         self._trace_enabled = rom_loader._trace_enabled
         self.flush_input()  # resets _slip_reader
@@ -2457,8 +2457,8 @@ def main():
     parser_write_flash.add_argument(
         '--board',
         help='Type of the board to be flash.',
-        choices=['esp32dev', 'toe'],
-        default='esp32dev')
+        choices=['dev', 'toe'],
+        default='dev')
 
     compress_args = parser_write_flash.add_mutually_exclusive_group(required=False)
     compress_args.add_argument('--compress', '-z', help='Compress data in transfer (default unless --no-stub is specified)',action="store_true", default=None)
@@ -2546,8 +2546,8 @@ def main():
     parser_erase_flash.add_argument(
         '--board',
         help='Type of the board to be flash.',
-        choices=['esp32dev', 'toe'],
-        default='esp32dev')
+        choices=['dev', 'toe'],
+        default='dev')
 
     parser_erase_region = subparsers.add_parser(
         'erase_region',
@@ -2567,8 +2567,8 @@ def main():
     parser.add_argument(
         '--boardtype',
         help='Type of the board to be flash.',
-        choices=['esp32dev', 'toe'],
-        default=os.environ.get('ESPTOOL_BOARDTYPE', 'esp32dev'))
+        choices=['dev', 'toe'],
+        default=os.environ.get('ESPTOOL_BOARDTYPE', 'dev'))
 
     expand_file_arguments()
 
